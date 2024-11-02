@@ -1,23 +1,41 @@
 # GestionNotas
 Proyecto tercer semestre POO
 DB
+
 CREATE DATABASE gestion_notas;
 USE gestion_notas;
+
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
+);
 
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario VARCHAR(50) NOT NULL,
     contrasena VARCHAR(50) NOT NULL,
-    rol ENUM('ADMIN', 'DOCENTE', 'ESTUDIANTE') NOT NULL
+    rol_id INT,
+    FOREIGN KEY (rol_id) REFERENCES roles(id)
 );
 
 CREATE TABLE estudiantes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(10) NOT NULL,
+    usuario_id INT,
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100),
     correo VARCHAR(100),
-    fecha_nacimiento DATE
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE docentes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(10) NOT NULL,
+    usuario_id INT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100),
+    correo VARCHAR(100),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
 CREATE TABLE cursos (
@@ -34,8 +52,11 @@ CREATE TABLE estudiantes_cursos (
     FOREIGN KEY (curso_id) REFERENCES cursos(id)
 );
 
--- Insertar el usuario admin
-INSERT INTO usuarios (usuario, contrasena, rol) VALUES ('admin', 'admin123', 'ADMIN');
+-- Insertar los roles
+INSERT INTO roles (nombre) VALUES ('ADMIN'), ('DOCENTE'), ('ESTUDIANTE');
+
+-- Insertar el usuario admin con su rol
+INSERT INTO usuarios (usuario, contrasena, rol_id) VALUES ('admin', 'admin123', 1);
 
 Driver Java
 https://dev.mysql.com/downloads/connector/j/
