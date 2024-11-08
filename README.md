@@ -35,6 +35,7 @@ CREATE TABLE docentes (
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100),
     correo VARCHAR(100),
+    area VARCHAR(100),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
