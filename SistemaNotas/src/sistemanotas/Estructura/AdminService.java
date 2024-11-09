@@ -52,8 +52,7 @@ public class AdminService {
                     rs.getString("codigo"),           // codigo
                     rs.getString("nombre"),           // nombre
                     rs.getString("apellido"),         // apellido
-                    rs.getString("correo"),           // correo
-                    rs.getString("fecha_nacimiento")  // fechaNacimiento
+                    rs.getString("correo")             // correo
                 );
             }
         } catch (SQLException e) {
@@ -86,6 +85,7 @@ public class AdminService {
     }
         return null;
     }
+    
     public boolean agregarEstudiante(String codigo, String nombre, String apellido, String correo) {
         String insertUsuarioQuery = "INSERT INTO usuarios (usuario, contrasena, rol_id) VALUES (?, ?, ?)";
         String insertEstudianteQuery = "INSERT INTO estudiantes (codigo, usuario_id, nombre, apellido, correo) VALUES (?, ?, ?, ?, ?)";
@@ -122,6 +122,7 @@ public class AdminService {
         }
         return false; // Retorna false en caso de error
     }
+    
     public boolean agregarDocente(String codigo, String nombre, String apellido, String correo, String area) {
         String insertUsuarioQuery = "INSERT INTO usuarios (usuario, contrasena, rol_id) VALUES (?, ?, ?)";
         String insertDocenteQuery = "INSERT INTO docentes (codigo, usuario_id, nombre, apellido, correo, area) VALUES (?, ?, ?, ?, ?, ?)";
@@ -160,5 +161,62 @@ public class AdminService {
         return false; // Retorna false en caso de error
     }
 
-}
+    public Estudiante obtenerEstudiante(String codigo) {
+    String query = "SELECT e.codigo, e.nombre, e.apellido, e.correo " +
+                   "FROM estudiantes e " +
+                   "JOIN usuarios u ON e.usuario_id = u.id " +
+                   "WHERE e.codigo = ?";
 
+    try (Connection conn = ConexionDB.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        
+        stmt.setString(1, codigo);  // Asigna el código al parámetro de la consulta
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.next()) {
+            // Extrae los datos del ResultSet
+            String codigoEstudiante = rs.getString("codigo");
+            String nombre = rs.getString("nombre");
+            String apellido = rs.getString("apellido");
+            String correo = rs.getString("correo");
+
+            // Crea el objeto Estudiante usando valores predeterminados para parámetros adicionales
+            return new Estudiante(
+                0,                  // id
+                "",                 // usuario
+                "",                 // contrasena
+                0,                  // rolId
+                codigoEstudiante,   // código
+                nombre,             // nombre
+                apellido,           // apellido
+                correo             // correo
+            );
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Maneja la excepción (puedes agregar un mejor manejo si lo prefieres)
+        }
+
+        return null; // Retorna null si no se encuentra el estudiante o si ocurre un error
+    }
+    
+    public boolean actualizarEstudiante(String codigo, String nombre, String apellido, String correo) {
+        String query = "UPDATE estudiantes SET nombre = ?, apellido = ?, correo = ? WHERE codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, nombre);   // Asigna el nombre al primer parámetro
+            stmt.setString(2, apellido); // Asigna el apellido al segundo parámetro
+            stmt.setString(3, correo);   // Asigna el correo al tercer parámetro
+            stmt.setString(4, codigo);   // Usa el código para identificar al estudiante
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0; // Retorna true si se actualizó al menos una fila
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo de la excepción (puedes mejorar el manejo si lo deseas)
+        }
+
+        return false; // Retorna false en caso de error
+    }
+
+}

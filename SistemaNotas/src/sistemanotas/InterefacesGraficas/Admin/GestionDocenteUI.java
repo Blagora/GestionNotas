@@ -14,13 +14,11 @@ public class GestionDocenteUI extends JFrame{
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        JButton buscarDocenteButton = new JButton("Buscar Docente");
         JButton editarDocenteButton = new JButton("Editar Docente");
         JButton eliminarDocenteButton = new JButton("Eliminar Docente");
         JButton asignarCursoButton = new JButton("Asignar Curso");
         JButton eliminarCursoButton = new JButton("Eliminar Curso");
 
-        panel.add(buscarDocenteButton);
         panel.add(editarDocenteButton);
         panel.add(eliminarDocenteButton);
         panel.add(asignarCursoButton);

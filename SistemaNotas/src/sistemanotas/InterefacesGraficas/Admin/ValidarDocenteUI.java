@@ -61,7 +61,7 @@ public class ValidarDocenteUI extends JFrame{
             stmtSearchUsuario.setString(1, codigo);
             ResultSet rs = stmtSearchUsuario.executeQuery();
             if (rs.next()) {
-                new GestionEstudianteUI().setVisible(true);
+                new GestionEstudianteUI(codigo).setVisible(true);
             }
             else{
                 JOptionPane.showMessageDialog(this, "Código inválido");

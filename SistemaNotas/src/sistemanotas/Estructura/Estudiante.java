@@ -8,19 +8,18 @@ public class Estudiante extends Usuario {
     private String nombre;
     private String apellido;
     private String correo;
-    private String fechaNacimiento;
     private List<Curso> cursosAsignados;
 
-    public Estudiante(int id, String usuario, String contrasena, int rolId, String codigo, String nombre, String apellido, String correo, String fechaNacimiento) {
+    public Estudiante(int id, String usuario, String contrasena, int rolId, String codigo, String nombre, String apellido, String correo){
         super(id, usuario, contrasena, rolId);
         this.codigo = codigo;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
-        this.fechaNacimiento = fechaNacimiento;
         this.cursosAsignados = new ArrayList<>();
     }
 
+    
     public String getCodigo() {
         return codigo;
     }
@@ -51,14 +50,6 @@ public class Estudiante extends Usuario {
 
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-
-    public String getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(String fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
     }
 
     public List<Curso> getCursosAsignados() {
