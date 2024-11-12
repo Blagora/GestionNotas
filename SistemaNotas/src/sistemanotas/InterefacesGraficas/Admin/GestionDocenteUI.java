@@ -8,14 +8,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import sistemanotas.Estructura.AdminService;
 
-
-public class GestionDocenteUI extends JFrame{
+public class GestionDocenteUI extends JFrame {
 
     private String codigoDocente;
+    private String codigoCurso;
     private AdminService adminService;
-    
+
     public GestionDocenteUI(String codigoDocente) {
-        
+
         adminService = new AdminService();
         this.codigoDocente = codigoDocente;
         setTitle("Gestión de Docentes");
@@ -34,15 +34,14 @@ public class GestionDocenteUI extends JFrame{
         panel.add(asignarCursoButton);
         panel.add(eliminarCursoButton);
         add(panel);
-        
-        editarDocenteButton.addActionListener(new ActionListener(){
+
+        editarDocenteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 abrirEditarDocente();
             }
-            
         });
-        
+
         eliminarDocenteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -61,8 +60,22 @@ public class GestionDocenteUI extends JFrame{
                 }
             }
         });
+
+        // Acción para asignar un curso
+        asignarCursoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirAsignarCurso();
+            }
+        });
     }
+
     private void abrirEditarDocente() {
         new EditarDocenteUI(codigoDocente).setVisible(true);
     }
+
+    private void abrirAsignarCurso() {
+        new AsignarCursoUI(codigoDocente).setVisible(true);
+    }
 }
+    

@@ -1,6 +1,8 @@
 package sistemanotas.Estructura;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import sistemanotas.ConexionBD.ConexionDB;
 
 public class AdminService {
@@ -311,5 +313,98 @@ public class AdminService {
         }
         return false;  // Devuelve false si no se eliminó ningún registro o si ocurrió un error
     }
+    
+    public boolean crearCurso(String codigo, String nombre) {
+        String query = "INSERT INTO cursos (codigo, nombre) VALUES (?, ?)";
 
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigo);  // Asigna el código al parámetro de la consulta
+            stmt.setString(2, nombre);  // Asigna el nombre al parámetro de la consulta
+            int rowsAffected = stmt.executeUpdate();  // Ejecuta la consulta de inserción
+
+            return rowsAffected > 0;  // Devuelve true si se insertó al menos un registro
+        } catch (SQLException e) {
+            e.printStackTrace();  // Maneja la excepción (puedes agregar un mejor manejo si lo prefieres)
+        }
+        return false;  // Devuelve false si ocurrió un error o no se insertó el registro
+    }
+
+    public List<String> obtenerCursosDisponibles() {
+        List<String> cursos = new ArrayList<>();
+        String query = "SELECT nombre FROM cursos";  // Consulta para obtener los cursos disponibles
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                cursos.add(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cursos;
+    }
+
+    public boolean asignarCursoADocente(String codigoCurso, String codigoDocente) {
+    // Consulta para asignar el curso al docente
+    String query = "UPDATE cursos SET docente_id = ? WHERE codigo = ?";
+
+    try (Connection conn = ConexionDB.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        // Asigna los parámetros correctamente
+        stmt.setString(1, codigoDocente);  // Código del docente
+        stmt.setString(2, codigoCurso);    // Código del curso
+
+        int rowsAffected = stmt.executeUpdate();  // Ejecuta la consulta de actualización
+
+        return rowsAffected > 0;  // Devuelve true si la asignación fue exitosa
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+    
+    public String obtenerCodigoCursoPorNombre(String nombreCurso)                                                                                                       {
+        String query = "SELECT codigo FROM cursos WHERE nombre = ?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, nombreCurso);  // Asigna el nombre del curso
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("codigo");  // Retorna el código del curso
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;  // Devuelve null si no se encuentra el curso
+    }
+    
+    public boolean asignarCursoAEstudiante(String codigoEstudiante, String codigoCurso) {
+        String query = "INSERT INTO estudiantes_cursos (estudiante_id, curso_id) " +
+                       "SELECT e.id, c.id FROM estudiantes e " +
+                       "JOIN cursos c ON c.codigo = ? WHERE e.codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigoCurso);  // Código del curso
+            stmt.setString(2, codigoEstudiante);  // Código del estudiante
+
+            int rowsAffected = stmt.executeUpdate();
+
+            return rowsAffected > 0;  // Devuelve true si la asignación fue exitosa
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    
 }

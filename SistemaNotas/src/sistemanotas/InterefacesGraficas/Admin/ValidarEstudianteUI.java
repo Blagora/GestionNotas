@@ -1,7 +1,5 @@
-
 package sistemanotas.InterefacesGraficas.Admin;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -25,7 +23,7 @@ public class ValidarEstudianteUI extends JFrame{
     public ValidarEstudianteUI() {
          setTitle("Validación de Estudiante");
         setSize(300, 150);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Crear el panel con FlowLayout (centrado)

@@ -23,6 +23,7 @@ public class AdminUI extends JFrame {
         JButton agregarEstudianteButton = new JButton("Agregar Nuevo Estudiante");
         JButton gestionarDocentesButton = new JButton("Gestionar Docentes");
         JButton agregarDocenteButton = new JButton("Agregar Nuevo Docente");
+        JButton crearCursoButton = new JButton("Crear Nuevo Curso");
         JButton salirButton = new JButton("Salir");
 
         gestionarEstudiantesButton.addActionListener(new ActionListener() {
@@ -46,7 +47,11 @@ public class AdminUI extends JFrame {
                 abrirAgregarDocente();
             }
         });
-
+        crearCursoButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                abrirCrearCurso();
+            }
+        });
         salirButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -58,6 +63,7 @@ public class AdminUI extends JFrame {
         panel.add(agregarEstudianteButton);
         panel.add(gestionarDocentesButton);
         panel.add(agregarDocenteButton);
+        panel.add(crearCursoButton);
         panel.add(salirButton);
         add(panel);
     }
@@ -76,7 +82,9 @@ public class AdminUI extends JFrame {
     private void abrirAgregarDocente() {
         new AgregarDocenteUI().setVisible(true);
     }
-    
+    private void abrirCrearCurso() {
+        new CrearCursoUI(adminService).setVisible(true);
+    }
 }
 
 

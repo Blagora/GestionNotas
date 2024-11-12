@@ -22,9 +22,10 @@ public class ValidarDocenteUI extends JFrame{
 
     // Constructor para configurar el JFrame
     public ValidarDocenteUI() {
-         setTitle("Validación de Docentes");
+        
+        setTitle("Validación de Docentes");
         setSize(300, 150);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Crear el panel con FlowLayout (centrado)

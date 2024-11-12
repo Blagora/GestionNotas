@@ -2,6 +2,7 @@ package sistemanotas.InterefacesGraficas.Admin;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -9,11 +10,14 @@ import javax.swing.JPanel;
 import sistemanotas.Estructura.AdminService;
 
 public class GestionEstudianteUI extends JFrame {
-    
-     private String codigoEstudiante;
+
+    private String codigoEstudiante;
+    private AdminService adminService;
 
     public GestionEstudianteUI(String codigoEstudiante) {
-        
+        adminService = new AdminService();
+        this.codigoEstudiante = codigoEstudiante;
+
         setTitle("Gestión de Estudiantes");
         setSize(500, 400);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -30,23 +34,29 @@ public class GestionEstudianteUI extends JFrame {
         panel.add(asignarCursoButton);
         panel.add(eliminarCursoButton);
         add(panel);
-        
-        editarEstudianteButton.addActionListener(new ActionListener(){
+
+        asignarCursoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                asignarCurso();
+            }
+        });
+
+        editarEstudianteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 abrirEditarEstudiante();
             }
-            
-        });   
+        });
+
         eliminarEstudianteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int confirm = JOptionPane.showConfirmDialog(null, 
-                    "¿Está seguro de que desea eliminar este estudiante?", 
-                    "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(null,
+                        "¿Está seguro de que desea eliminar este estudiante?",
+                        "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
 
                 if (confirm == JOptionPane.YES_OPTION) {
-                    AdminService adminService = new AdminService();
                     boolean eliminado = adminService.eliminarEstudiante(codigoEstudiante);
 
                     if (eliminado) {
@@ -57,10 +67,41 @@ public class GestionEstudianteUI extends JFrame {
                 }
             }
         });
-
     }
+
+    private void asignarCurso() {
+        // Mostrar un cuadro de diálogo para seleccionar un curso
+        List<String> cursos = adminService.obtenerCursosDisponibles();  // Método que devuelve los cursos disponibles
+
+        String[] cursosArray = cursos.toArray(new String[0]);
+        String cursoSeleccionado = (String) JOptionPane.showInputDialog(this, 
+            "Selecciona un curso", 
+            "Asignar Curso", 
+            JOptionPane.PLAIN_MESSAGE, 
+            null, 
+            cursosArray, 
+            cursosArray[0]);
+
+        if (cursoSeleccionado != null && !cursoSeleccionado.isEmpty()) {
+            // Obtener el código del curso a partir del nombre
+            String codigoCurso = adminService.obtenerCodigoCursoPorNombre(cursoSeleccionado);
+
+            // Asignar el curso al estudiante
+            boolean asignado = adminService.asignarCursoAEstudiante(codigoEstudiante, codigoCurso);
+
+            if (asignado) {
+                JOptionPane.showMessageDialog(this, "Curso asignado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al asignar el curso. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un curso.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void abrirEditarEstudiante() {
         new EditarEstudianteUI(codigoEstudiante).setVisible(true);
     }
 }
+
 
