@@ -5,13 +5,23 @@ public class Docente extends Usuario {
     private String apellido;
     private String correo;
     private String area;
+    private String codigo;
     
-    public Docente(int id, String usuario, String contrasena, int rolId, String nombre, String apellido, String correo, String area) {
+    public Docente(int id, String usuario, String contrasena, int rolId, String codigo, String nombre, String apellido, String correo, String area) {
         super(id, usuario, contrasena, rolId);
+        this.codigo = codigo;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.area = area;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getNombre() {
@@ -77,7 +87,6 @@ public class Docente extends Usuario {
     public void setRolId(int rolId) {
         this.rolId = rolId;
     }
-
    
 }
 

@@ -74,6 +74,7 @@ public class AdminService {
                 rs.getString("usuario"),          // usuario
                 rs.getString("contrasena"),       // contrasena
                 rs.getInt("rol_id"),              // rolId
+                rs.getString("codigo"),         //codigo
                 rs.getString("nombre"),           // nombre
                 rs.getString("apellido"),         // apellido
                 rs.getString("correo"),           // correo
@@ -199,6 +200,45 @@ public class AdminService {
         return null; // Retorna null si no se encuentra el estudiante o si ocurre un error
     }
     
+    public Docente obtenerDocente(String codigo) {
+        String query = "SELECT d.codigo, d.nombre, d.apellido, d.correo, d.area " +
+                       "FROM docentes d " +
+                       "JOIN usuarios u ON d.usuario_id = u.id " +
+                       "WHERE d.codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigo);  // Asigna el código al parámetro de la consulta
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Extrae los datos del ResultSet
+                String codigoDocente = rs.getString("codigo");
+                String nombre = rs.getString("nombre");
+                String apellido = rs.getString("apellido");
+                String correo = rs.getString("correo");
+                String area = rs.getString("area");
+
+                // Crea el objeto Estudiante usando valores predeterminados para parámetros adicionales
+                return new Docente(
+                    0,                  // id
+                    "",                 // usuario
+                    "",                 // contrasena
+                    0,                  // rolId
+                    codigoDocente,   // código
+                    nombre,             // nombre
+                    apellido,           // apellido
+                    correo,           // correo
+                    area             // area
+                );
+            }
+            } catch (SQLException e) {
+                e.printStackTrace();  // Maneja la excepción (puedes agregar un mejor manejo si lo prefieres)
+            }
+        return null; // Retorna null si no se encuentra el estudiante o si ocurre un error
+    }
+    
     public boolean actualizarEstudiante(String codigo, String nombre, String apellido, String correo) {
         String query = "UPDATE estudiantes SET nombre = ?, apellido = ?, correo = ? WHERE codigo = ?";
 
@@ -217,6 +257,59 @@ public class AdminService {
         }
 
         return false; // Retorna false en caso de error
+    }
+
+    public boolean actualizarDocente(String codigo, String nombre, String apellido, String correo, String area) {
+        String query = "UPDATE docentes SET nombre = ?, apellido = ?, correo = ?, area = ? WHERE codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, nombre);   // Asigna el nombre al primer parámetro
+            stmt.setString(2, apellido); // Asigna el apellido al segundo parámetro
+            stmt.setString(3, correo);   // Asigna el correo al tercer parámetro
+            stmt.setString(4, area);   // Asigna el area al tercer parámetro
+            stmt.setString(5, codigo);   // Usa el código para identificar al estudiante
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0; // Retorna true si se actualizó al menos una fila
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo de la excepción (puedes mejorar el manejo si lo deseas)
+        }
+
+        return false; // Retorna false en caso de error
+    }
+    
+    public boolean eliminarEstudiante(String codigo) {
+        String query = "DELETE FROM estudiantes WHERE codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigo);  // Asigna el código al parámetro de la consulta
+            int rowsAffected = stmt.executeUpdate();  // Ejecuta la consulta de eliminación
+
+            return rowsAffected > 0;  // Devuelve true si se eliminó al menos un registro
+        } catch (SQLException e) {
+            e.printStackTrace();  // Maneja la excepción (puedes agregar un mejor manejo si lo prefieres)
+        }
+        return false;  // Devuelve false si no se eliminó ningún registro o si ocurrió un error
+    }
+    
+    public boolean eliminarDocente(String codigo) {
+        String query = "DELETE FROM docentes WHERE codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigo);  // Asigna el código al parámetro de la consulta
+            int rowsAffected = stmt.executeUpdate();  // Ejecuta la consulta de eliminación
+
+            return rowsAffected > 0;  // Devuelve true si se eliminó al menos un registro
+        } catch (SQLException e) {
+            e.printStackTrace();  // Maneja la excepción (puedes agregar un mejor manejo si lo prefieres)
+        }
+        return false;  // Devuelve false si no se eliminó ningún registro o si ocurrió un error
     }
 
 }

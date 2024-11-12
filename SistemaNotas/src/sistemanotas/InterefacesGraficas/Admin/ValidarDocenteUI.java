@@ -1,7 +1,6 @@
 
 package sistemanotas.InterefacesGraficas.Admin;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -55,13 +54,13 @@ public class ValidarDocenteUI extends JFrame{
     // Método para validar el usuario en la base de datos
     private void validateUser() {
         String codigo = usernameField.getText();
-        String searchEstudianteQuery = "SELECT * FROM docentes WHERE codigo = ?";
+        String searchDocenteQuery = "SELECT * FROM docentes WHERE codigo = ?";
         try (Connection conn = ConexionDB.getConnection()) {
-            PreparedStatement stmtSearchUsuario = conn.prepareStatement(searchEstudianteQuery);
+            PreparedStatement stmtSearchUsuario = conn.prepareStatement(searchDocenteQuery);
             stmtSearchUsuario.setString(1, codigo);
             ResultSet rs = stmtSearchUsuario.executeQuery();
             if (rs.next()) {
-                new GestionEstudianteUI(codigo).setVisible(true);
+                new GestionDocenteUI(codigo).setVisible(true);
             }
             else{
                 JOptionPane.showMessageDialog(this, "Código inválido");
