@@ -20,7 +20,7 @@ CREATE TABLE usuarios (
 
 CREATE TABLE estudiantes (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(10) NOT NULL,
+    codigo VARCHAR(10) NOT NULL UNIQUE,
     usuario_id INT,
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100),
@@ -30,7 +30,7 @@ CREATE TABLE estudiantes (
 
 CREATE TABLE docentes (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(10) NOT NULL,
+    codigo VARCHAR(50) NOT NULL UNIQUE,
     usuario_id INT,
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100),
@@ -42,7 +42,9 @@ CREATE TABLE docentes (
 CREATE TABLE cursos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(10) NOT NULL,
-    nombre VARCHAR(100) NOT NULL
+    nombre VARCHAR(100) NOT NULL,
+    docente_id varchar(50),
+    FOREIGN KEY (docente_id) REFERENCES docentes(codigo) ON DELETE SET NULL
 );
 
 CREATE TABLE estudiantes_cursos (
@@ -58,6 +60,5 @@ INSERT INTO roles (nombre) VALUES ('ADMIN'), ('DOCENTE'), ('ESTUDIANTE');
 
 -- Insertar el usuario admin con su rol
 INSERT INTO usuarios (usuario, contrasena, rol_id) VALUES ('admin', 'admin123', 1);
-
 Driver Java
 https://dev.mysql.com/downloads/connector/j/
