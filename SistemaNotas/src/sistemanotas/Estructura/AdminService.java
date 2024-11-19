@@ -406,5 +406,117 @@ public class AdminService {
         return false;
     }
 
+    public boolean eliminarCursoDeEstudiante(String codigoEstudiante, String codigoCurso) {
+        String query = "DELETE FROM estudiantes_cursos " +
+                       "WHERE estudiante_id = (SELECT id FROM estudiantes WHERE codigo = ?) " +
+                       "AND curso_id = (SELECT id FROM cursos WHERE codigo = ?)";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigoEstudiante);  // Código del estudiante
+            stmt.setString(2, codigoCurso);      // Código del curso
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;  // Devuelve true si se eliminó exitosamente
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<String> obtenerCursosAsignados(String codigoEstudiante) {
+        List<String> cursos = new ArrayList<>();
+        String query = "SELECT c.nombre FROM cursos c " +
+                       "JOIN estudiantes_cursos ec ON c.id = ec.curso_id " +
+                       "JOIN estudiantes e ON e.id = ec.estudiante_id " +
+                       "WHERE e.codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigoEstudiante);  // Código del estudiante
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    cursos.add(rs.getString("nombre"));  // Agrega el nombre del curso a la lista
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cursos;
+    }
+
+    public List<String> obtenerCursosPorDocente(String codigoDocente) {
+        List<String> cursos = new ArrayList<>();
+        String query = "SELECT nombre FROM cursos WHERE docente_id = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigoDocente);  // Usa el código del docente
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    cursos.add(rs.getString("nombre"));  // Agrega el nombre del curso a la lista
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cursos;
+    }
+
+    public boolean eliminarCursoDeDocente(String codigoCurso, String codigoDocente) {
+        String query = "UPDATE cursos SET docente_id = NULL WHERE codigo = ? AND docente_id = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigoCurso);     // Código del curso
+            stmt.setString(2, codigoDocente);  // Código del docente
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;  // Devuelve true si se actualizó al menos una fila
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<String> obtenerTodosLosCursos() {
+        List<String> cursos = new ArrayList<>();
+        String query = "SELECT nombre FROM cursos";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                cursos.add(rs.getString("nombre"));  // Agrega el nombre de cada curso
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cursos;
+    }
     
+    public boolean eliminarCurso(String codigoCurso) {
+        String query = "DELETE FROM cursos WHERE codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, codigoCurso);  // Establece el código del curso
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;  // Devuelve true si se eliminó el curso
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 }

@@ -20,7 +20,7 @@ public class CrearCursoUI extends JFrame{
     public CrearCursoUI(AdminService adminService) {
         
         this.adminService = adminService;
-        setTitle("Editar Docente");
+        setTitle("Crear Curso");
         setSize(400, 200);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);

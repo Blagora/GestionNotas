@@ -2,6 +2,7 @@ package sistemanotas.InterefacesGraficas.Admin;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -68,6 +69,13 @@ public class GestionDocenteUI extends JFrame {
                 abrirAsignarCurso();
             }
         });
+        
+        eliminarCursoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eliminarCursoDocente();
+            }
+        });
     }
 
     private void abrirEditarDocente() {
@@ -77,5 +85,44 @@ public class GestionDocenteUI extends JFrame {
     private void abrirAsignarCurso() {
         new AsignarCursoUI(codigoDocente).setVisible(true);
     }
+    
+    private void eliminarCursoDocente() {
+        // Obtener los cursos asignados al docente
+        List<String> cursosAsignados = adminService.obtenerCursosPorDocente(codigoDocente);
+
+        if (cursosAsignados == null || cursosAsignados.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El docente no tiene cursos asignados.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Mostrar un cuadro de diálogo para seleccionar el curso a eliminar
+        String[] cursosArray = cursosAsignados.toArray(new String[0]);
+        String cursoSeleccionado = (String) JOptionPane.showInputDialog(
+            this, 
+            "Seleccione el curso a eliminar:", 
+            "Eliminar Curso del Docente", 
+            JOptionPane.PLAIN_MESSAGE, 
+            null, 
+            cursosArray, 
+            cursosArray[0]
+        );
+
+        if (cursoSeleccionado != null && !cursoSeleccionado.isEmpty()) {
+            // Obtener el código del curso seleccionado
+            String codigoCurso = adminService.obtenerCodigoCursoPorNombre(cursoSeleccionado);
+
+            // Eliminar la asignación del curso al docente
+            boolean eliminado = adminService.eliminarCursoDeDocente(codigoCurso, codigoDocente);
+
+            if (eliminado) {
+                JOptionPane.showMessageDialog(this, "Curso eliminado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar el curso. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se seleccionó ningún curso.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
 }
     

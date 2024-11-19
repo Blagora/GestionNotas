@@ -15,7 +15,8 @@ public class GestionEstudianteUI extends JFrame {
     private AdminService adminService;
 
     public GestionEstudianteUI(String codigoEstudiante) {
-        adminService = new AdminService();
+        
+        this.adminService = new AdminService();
         this.codigoEstudiante = codigoEstudiante;
 
         setTitle("Gestión de Estudiantes");
@@ -41,6 +42,14 @@ public class GestionEstudianteUI extends JFrame {
                 asignarCurso();
             }
         });
+        
+        eliminarCursoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eliminarCurso();
+            }
+        });
+
 
         editarEstudianteButton.addActionListener(new ActionListener() {
             @Override
@@ -98,10 +107,49 @@ public class GestionEstudianteUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un curso.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void eliminarCurso() {
+    // Obtener los cursos asignados al estudiante
+    List<String> cursosAsignados = adminService.obtenerCursosAsignados(codigoEstudiante); // Método que devuelve los cursos asignados
 
+    if (cursosAsignados == null || cursosAsignados.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El estudiante no tiene cursos asignados.", "Información", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+
+    // Mostrar los cursos en un cuadro de diálogo para seleccionar
+    String[] cursosArray = cursosAsignados.toArray(new String[0]);
+    String cursoSeleccionado = (String) JOptionPane.showInputDialog(this, 
+            "Selecciona el curso a eliminar", 
+            "Eliminar Curso", 
+            JOptionPane.PLAIN_MESSAGE, 
+            null, 
+            cursosArray, 
+            cursosArray[0]);
+
+        if (cursoSeleccionado != null && !cursoSeleccionado.isEmpty()) {
+            // Obtener el código del curso seleccionado (si es necesario)
+            String codigoCurso = adminService.obtenerCodigoCursoPorNombre(cursoSeleccionado);
+
+            // Llamar al servicio para eliminar el curso
+            boolean eliminado = adminService.eliminarCursoDeEstudiante(codigoEstudiante, codigoCurso);
+
+            if (eliminado) {
+                JOptionPane.showMessageDialog(this, "Curso eliminado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar el curso. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se seleccionó ningún curso.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    
     private void abrirEditarEstudiante() {
         new EditarEstudianteUI(codigoEstudiante).setVisible(true);
     }
+    
+    
 }
 
 

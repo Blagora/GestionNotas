@@ -2,22 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Admin/ValidarDocenteUI.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Admin/GestionDocenteUI.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Login.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Admin/AgregarDocenteUI.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/Estructura/Docente.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/Estructura/AdminService.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/Estructura/Curso.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Admin/AdminUI.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Admin/ValidarEstudianteUI.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/Estructura/Usuario.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Admin/AgregarEstudianteUI.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/Estructura/Estudiante.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/SistemaNotas.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/InterefacesGraficas/Admin/GestionEstudianteUI.java</file>
-            <file>file:/C:/Cursos/Java/SistemaNotas/src/sistemanotas/ConexionBD/ConexionDB.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
