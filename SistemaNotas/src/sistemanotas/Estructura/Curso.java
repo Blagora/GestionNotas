@@ -10,6 +10,4 @@ public class Curso {
         this.codigo = codigo;
         this.nombre = nombre;
     }
-
-    // Getters y setters omitidos para brevedad
 }
