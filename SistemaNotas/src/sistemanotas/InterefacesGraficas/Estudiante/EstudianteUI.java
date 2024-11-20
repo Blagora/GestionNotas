@@ -5,8 +5,8 @@ import sistemanotas.Estructura.Estudiante;
 
 public class EstudianteUI extends JFrame {
 
-    public EstudianteUI(Estudiante estudiante) {
-        setTitle("Panel de Estudiante - " + estudiante.getNombre());
+    public EstudianteUI() {
+        setTitle("Panel de Estudiante - ");
         setSize(400, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -14,9 +14,6 @@ public class EstudianteUI extends JFrame {
         JPanel panel = new JPanel();
         JButton verCursosButton = new JButton("Ver Cursos");
         JButton verNotasButton = new JButton("Ver Notas");
-
-        verCursosButton.addActionListener(e -> verCursos(estudiante));
-        verNotasButton.addActionListener(e -> verNotas(estudiante));
 
         panel.add(verCursosButton);
         panel.add(verNotasButton);

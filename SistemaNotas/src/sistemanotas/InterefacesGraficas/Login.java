@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import sistemanotas.ConexionBD.ConexionDB;
+import sistemanotas.Estructura.Docente;
+import sistemanotas.Estructura.Estudiante;
+import sistemanotas.InterefacesGraficas.Estudiante.EstudianteUI;
+import sistemanotas.InterefacesGraficas.docente.DocenteUI;
 
 public class Login extends JFrame {
     private JTextField usuarioField;
@@ -42,25 +46,37 @@ public class Login extends JFrame {
         String contrasena = new String(contrasenaField.getPassword());
 
         try (Connection conn = ConexionDB.getConnection()) {
-            String query = "SELECT rol_id FROM usuarios WHERE usuario = ? AND contrasena = ?";
+            String query = "SELECT id, usuario, contrasena, rol_id FROM usuarios WHERE usuario = ? AND contrasena = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, usuario);
             stmt.setString(2, contrasena);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                int userId = rs.getInt("id");
                 int rolId = rs.getInt("rol_id");
+
                 switch (rolId) {
                     case 1: // Admin
                         JOptionPane.showMessageDialog(this, "Ingreso como Admin");
                         new AdminUI().setVisible(true);
                         break;
+
                     case 2: // Docente
-                        JOptionPane.showMessageDialog(this, "Ingreso como Docente");
+                        Docente docente = obtenerDocente(conn, userId);
+                        if (docente != null) {
+                            JOptionPane.showMessageDialog(this, "Ingreso como Docente");
+                            new DocenteUI(contrasena).setVisible(true);
+                        } else {
+                            JOptionPane.showMessageDialog(this, "No se encontraron datos del docente.");
+                        }
                         break;
+
                     case 3: // Estudiante
                         JOptionPane.showMessageDialog(this, "Ingreso como Estudiante");
+                        new EstudianteUI().setVisible(true);
                         break;
+
                     default:
                         JOptionPane.showMessageDialog(this, "Rol desconocido");
                         break;
@@ -71,7 +87,35 @@ public class Login extends JFrame {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }
+    
+    private Docente obtenerDocente(Connection conn, int userId) {
+        String query = "SELECT d.codigo, d.nombre, d.apellido, d.correo, d.area " +
+                       "FROM docentes d " +
+                       "JOIN usuarios u ON d.usuario_id = u.id " +
+                       "WHERE u.id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String codigo = rs.getString("codigo");
+                String nombre = rs.getString("nombre");
+                String apellido = rs.getString("apellido");
+                String correo = rs.getString("correo");
+                String area = rs.getString("area");
+
+                return new Docente(userId, null, null, 2, codigo, nombre, apellido, correo, area);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener datos del docente.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    return null;
+}
+
 
 }
