@@ -388,22 +388,20 @@ public class AdminService {
     
     public boolean asignarCursoAEstudiante(String codigoEstudiante, String codigoCurso) {
         String query = "INSERT INTO estudiantes_cursos (estudiante_id, curso_id) " +
-                       "SELECT e.id, c.id FROM estudiantes e " +
-                       "JOIN cursos c ON c.codigo = ? WHERE e.codigo = ?";
+                       "SELECT e.id, c.id FROM estudiantes e, cursos c " +
+                       "WHERE e.codigo = ? AND c.codigo = ?";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setString(1, codigoCurso);  // Código del curso
-            stmt.setString(2, codigoEstudiante);  // Código del estudiante
-
+            stmt.setString(1, codigoEstudiante);
+            stmt.setString(2, codigoCurso);
             int rowsAffected = stmt.executeUpdate();
 
-            return rowsAffected > 0;  // Devuelve true si la asignación fue exitosa
+            return rowsAffected > 0;  // Si se insertó una fila, la asignación fue exitosa
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public boolean eliminarCursoDeEstudiante(String codigoEstudiante, String codigoCurso) {
@@ -518,5 +516,49 @@ public class AdminService {
 
         return false;
     }
+    
+    public boolean verificarCursoAsignado(String codigoDocente, String codigoCurso) {
+        boolean asignado = false;
+        String query = "SELECT 1 FROM cursos WHERE docente_id = ? AND codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, codigoDocente);
+            stmt.setString(2, codigoCurso);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                asignado = true;  // El curso ya está asignado al docente
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return asignado;
+    }
+
+    public boolean verificarCursoAsignadoEst(String codigoEstudiante, String codigoCurso) {
+        boolean asignado = false;
+        String query = "SELECT 1 FROM estudiantes_cursos ec " +
+                       "JOIN estudiantes e ON ec.estudiante_id = e.id " +
+                       "JOIN cursos c ON ec.curso_id = c.id " +
+                       "WHERE e.codigo = ? AND c.codigo = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, codigoEstudiante);
+            stmt.setString(2, codigoCurso);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                asignado = true;  // El curso ya está asignado al estudiante
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return asignado;
+    }
+
 
 }

@@ -79,34 +79,42 @@ public class GestionEstudianteUI extends JFrame {
     }
 
     private void asignarCurso() {
-        // Mostrar un cuadro de diálogo para seleccionar un curso
+     // Mostrar un cuadro de diálogo para seleccionar un curso
         List<String> cursos = adminService.obtenerCursosDisponibles();  // Método que devuelve los cursos disponibles
 
         String[] cursosArray = cursos.toArray(new String[0]);
         String cursoSeleccionado = (String) JOptionPane.showInputDialog(this, 
-            "Selecciona un curso", 
-            "Asignar Curso", 
-            JOptionPane.PLAIN_MESSAGE, 
-            null, 
-            cursosArray, 
-            cursosArray[0]);
+         "Selecciona un curso", 
+         "Asignar Curso", 
+         JOptionPane.PLAIN_MESSAGE, 
+         null, 
+         cursosArray, 
+         cursosArray[0]);
 
-        if (cursoSeleccionado != null && !cursoSeleccionado.isEmpty()) {
-            // Obtener el código del curso a partir del nombre
-            String codigoCurso = adminService.obtenerCodigoCursoPorNombre(cursoSeleccionado);
+     if (cursoSeleccionado != null && !cursoSeleccionado.isEmpty()) {
+         // Obtener el código del curso a partir del nombre
+         String codigoCurso = adminService.obtenerCodigoCursoPorNombre(cursoSeleccionado);
 
-            // Asignar el curso al estudiante
-            boolean asignado = adminService.asignarCursoAEstudiante(codigoEstudiante, codigoCurso);
+         // Verificar si el curso ya está asignado al estudiante
+         boolean cursoAsignado = adminService.verificarCursoAsignadoEst(codigoEstudiante, codigoCurso);
 
-            if (asignado) {
-                JOptionPane.showMessageDialog(this, "Curso asignado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al asignar el curso. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un curso.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+         if (cursoAsignado) {
+             JOptionPane.showMessageDialog(this, "Este curso ya ha sido asignado al estudiante.", "Error", JOptionPane.ERROR_MESSAGE);
+         } else {
+             // Asignar el curso al estudiante
+             boolean asignado = adminService.asignarCursoAEstudiante(codigoEstudiante, codigoCurso);
+
+             if (asignado) {
+                 JOptionPane.showMessageDialog(this, "Curso asignado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+             } else {
+                 JOptionPane.showMessageDialog(this, "Error al asignar el curso. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+             }
+         }
+     } else {
+         JOptionPane.showMessageDialog(this, "Por favor, seleccione un curso.", "Error", JOptionPane.ERROR_MESSAGE);
+     }
+ }
+
     
     private void eliminarCurso() {
     // Obtener los cursos asignados al estudiante

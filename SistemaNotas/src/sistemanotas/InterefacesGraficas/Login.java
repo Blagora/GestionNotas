@@ -73,8 +73,13 @@ public class Login extends JFrame {
                         break;
 
                     case 3: // Estudiante
-                        JOptionPane.showMessageDialog(this, "Ingreso como Estudiante");
-                        new EstudianteUI().setVisible(true);
+                        Estudiante estudiante = obtenerEstudiante(conn, userId);
+                        if (estudiante != null) {
+                            JOptionPane.showMessageDialog(this, "Ingreso como Estudiante");
+                            new EstudianteUI(contrasena).setVisible(true); // Pasar el objeto Estudiante
+                        } else {
+                            JOptionPane.showMessageDialog(this, "No se encontraron datos del estudiante.");
+                        }
                         break;
 
                     default:
@@ -115,7 +120,33 @@ public class Login extends JFrame {
             JOptionPane.showMessageDialog(null, "Error al obtener datos del docente.", "Error", JOptionPane.ERROR_MESSAGE);
     }
     return null;
-}
+    
+    
+    }
+    private Estudiante obtenerEstudiante(Connection conn, int userId) {
+        String query = "SELECT e.codigo, e.nombre, e.apellido, e.correo " +
+                       "FROM estudiantes e " +
+                       "JOIN usuarios u ON e.usuario_id = u.id " +
+                       "WHERE u.id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String codigo = rs.getString("codigo");
+                String nombre = rs.getString("nombre");
+                String apellido = rs.getString("apellido");
+                String correo = rs.getString("correo");
+
+                return new Estudiante(userId, null, null, 3, codigo, nombre, apellido, correo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener datos del estudiante.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
 
 
 }

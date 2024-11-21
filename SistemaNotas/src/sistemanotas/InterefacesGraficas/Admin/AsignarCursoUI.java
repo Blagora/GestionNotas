@@ -62,14 +62,21 @@ public class AsignarCursoUI extends JFrame {
             // Obtén el código del curso para asignarlo al docente
             String codigoCurso = obtenerCodigoCurso(cursoSeleccionado);
 
-            // Asigna el curso al docente
-            boolean asignado = adminService.asignarCursoADocente(codigoCurso, codigoDocente);
+            // Verificar si el docente ya tiene asignado el curso
+            boolean cursoAsignado = adminService.verificarCursoAsignado(codigoDocente, codigoCurso);
 
-            if (asignado) {
-                JOptionPane.showMessageDialog(this, "Curso asignado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                dispose(); // Cierra la ventana tras asignar el curso
+            if (cursoAsignado) {
+                JOptionPane.showMessageDialog(this, "Este curso ya ha sido asignado al docente.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Error al asignar el curso. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+                // Asigna el curso al docente
+                boolean asignado = adminService.asignarCursoADocente(codigoCurso, codigoDocente);
+
+                if (asignado) {
+                    JOptionPane.showMessageDialog(this, "Curso asignado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    dispose(); // Cierra la ventana tras asignar el curso
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al asignar el curso. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un curso.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -82,4 +89,3 @@ public class AsignarCursoUI extends JFrame {
         return adminService.obtenerCodigoCursoPorNombre(nombreCurso);
     }
 }
-

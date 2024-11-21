@@ -210,6 +210,19 @@ public class AsignarNotasUI extends JFrame {
                 if (rsGrupo.next()) {
                     int grupoId = rsGrupo.getInt("id");
 
+                    // Verificar si ya existe una nota para el estudiante en la misma tarea y grupo
+                    String verificarNotaQuery = "SELECT COUNT(*) FROM notas_tareas WHERE grupo_id = ? AND estudiante_id = ? AND nombre_tarea = ?";
+                    PreparedStatement stmtVerificarNota = conn.prepareStatement(verificarNotaQuery);
+                    stmtVerificarNota.setInt(1, grupoId);
+                    stmtVerificarNota.setInt(2, estudianteId);
+                    stmtVerificarNota.setString(3, tarea);
+                    ResultSet rsVerificarNota = stmtVerificarNota.executeQuery();
+
+                    if (rsVerificarNota.next() && rsVerificarNota.getInt(1) > 0) {
+                        JOptionPane.showMessageDialog(this, "Ya se ha asignado una nota para esta tarea en este grupo al estudiante.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return; // No insertar la nota si ya existe
+                    }
+
                     // Insertar la nota en la base de datos
                     String insertQuery = "INSERT INTO notas_tareas (grupo_id, estudiante_id, nombre_tarea, nota) " +
                             "VALUES (?, ?, ?, ?)";
@@ -228,4 +241,5 @@ public class AsignarNotasUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al asignar la nota.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 }

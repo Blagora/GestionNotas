@@ -130,6 +130,12 @@ public class GestionGruposUI extends JFrame {
                 return;
             }
 
+            // Verificar que no exista un grupo con el mismo nombre en el mismo corte
+            if (existeGrupoEnCorte(conn, corteId, grupoNombre)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un grupo con el mismo nombre en este corte.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Verificar que los porcentajes no sumen más de 100% (si hay otros grupos asociados a este corte)
             if (validarPorcentajeTotal(corteId, porcentaje)) {
                 JOptionPane.showMessageDialog(this, "El porcentaje total no puede superar el 100%.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -151,6 +157,17 @@ public class GestionGruposUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al guardar el grupo.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private boolean existeGrupoEnCorte(Connection conn, int corteId, String grupoNombre) throws SQLException {
+        String query = "SELECT 1 FROM grupos_notas WHERE corte_id = ? AND nombre = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, corteId);
+            stmt.setString(2, grupoNombre);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next(); // Si existe un resultado, significa que ya hay un grupo con el mismo nombre
+        }
+    }
+
 
     private int obtenerCorteId(Connection conn, String codigoCurso, String nombreCorte) throws SQLException {
         String query = "SELECT id FROM cortes WHERE curso_id = (SELECT id FROM cursos WHERE codigo = ?) AND nombre = ?";
