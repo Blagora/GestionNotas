@@ -1,9 +1,13 @@
 package sistemanotas.InterefacesGraficas.Admin;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import sistemanotas.Estructura.AdminService;
 
 public class AgregarEstudianteUI extends JFrame {
@@ -15,74 +19,111 @@ public class AgregarEstudianteUI extends JFrame {
     private JButton agregarButton;
     private JButton cancelarButton;
     private AdminService adminService;
+    private BufferedImage backgroundImage;
 
     public AgregarEstudianteUI() {
         adminService = new AdminService();
-        
         setTitle("Agregar Estudiante");
-        setSize(400, 350);
+        setSize(600, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Crear componentes
-        codigoField = new JTextField(20);
-        nombreField = new JTextField(20);
-        apellidoField = new JTextField(20);
-        correoField = new JTextField(20);
-        agregarButton = new JButton("Agregar Estudiante");
-        cancelarButton = new JButton("Cancelar");
+        // Cargar la imagen de fondo
+        try {
+            backgroundImage = loadBackgroundImage("C:\\Users\\Admin\\Pictures\\proyecto_images\\estudiantes_fondo.jpg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        // Crear panel
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
+        // Configurar el panel principal
+        JPanel mainPanel = new BackgroundPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
-        // Posicionar componentes en el panel
-        JLabel codigoLabel = new JLabel("Código:");
-        codigoLabel.setBounds(30, 30, 80, 25);
-        panel.add(codigoLabel);
-        codigoField.setBounds(120, 30, 200, 25);
-        panel.add(codigoField);
+        // Títulos y campos
+        JLabel titleLabel = new JLabel("Agregar Estudiante");
+        titleLabel.setFont(new Font("Arial Black", Font.BOLD, 30));
+        titleLabel.setForeground(new Color(15, 42, 236 )); // Ajusta el color para mayor contraste
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel nombreLabel = new JLabel("Nombre:");
-        nombreLabel.setBounds(30, 70, 80, 25);
-        panel.add(nombreLabel);
-        nombreField.setBounds(120, 70, 200, 25);
-        panel.add(nombreField);
+        codigoField = createStyledTextField();
+        nombreField = createStyledTextField();
+        apellidoField = createStyledTextField();
+        correoField = createStyledTextField();
 
-        JLabel apellidoLabel = new JLabel("Apellido:");
-        apellidoLabel.setBounds(30, 110, 80, 25);
-        panel.add(apellidoLabel);
-        apellidoField.setBounds(120, 110, 200, 25);
-        panel.add(apellidoField);
+        agregarButton = createStyledButton("Agregar Estudiante", new Color(34, 139, 34)); // Verde
+        cancelarButton = createStyledButton("Cancelar", new Color(220, 20, 60)); // Rojo
 
-        JLabel correoLabel = new JLabel("Correo:");
-        correoLabel.setBounds(30, 150, 80, 25);
-        panel.add(correoLabel);
-        correoField.setBounds(120, 150, 200, 25);
-        panel.add(correoField);
+        // Crear contenedores para campos y etiquetas
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(createLabeledField("Código:", codigoField));
+        mainPanel.add(createLabeledField("Nombre:", nombreField));
+        mainPanel.add(createLabeledField("Apellido:", apellidoField));
+        mainPanel.add(createLabeledField("Correo:", correoField));
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        agregarButton.setBounds(90, 200, 150, 30);
-        panel.add(agregarButton);
-        cancelarButton.setBounds(250, 200, 100, 30);
-        panel.add(cancelarButton);
+        // Botones
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        buttonPanel.add(agregarButton);
+        buttonPanel.add(cancelarButton);
+        mainPanel.add(buttonPanel);
 
-        // Agregar acción al botón agregar
-        agregarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                agregarEstudiante();
+        // Agregar acción a los botones
+        agregarButton.addActionListener(e -> agregarEstudiante());
+        cancelarButton.addActionListener(e -> dispose());
+
+        add(mainPanel);
+    }
+
+    private JPanel createLabeledField(String labelText, JTextField textField) {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        panel.setOpaque(false);
+        JLabel label = new JLabel(labelText);
+        label.setForeground(new Color(15, 42, 236)); // Color ajustado
+        label.setFont(new Font("Arial Black", Font.PLAIN, 30));
+        panel.add(label, BorderLayout.WEST);
+        panel.add(textField, BorderLayout.CENTER);
+        return panel;
+    }
+
+  private JTextField createStyledTextField() {
+    JTextField textField = new JTextField(15); // Ajustamos las columnas a 15
+    textField.setFont(new Font("Arial ", Font.PLAIN, 30));
+    textField.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+    textField.setPreferredSize(new Dimension(150, 25)); // Tamaño personalizado
+    return textField;
+}
+
+    private JButton createStyledButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        return button;
+    }
+
+    private BufferedImage loadBackgroundImage(String filePath) {
+        try {
+            return ImageIO.read(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private class BackgroundPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (backgroundImage != null) {
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
             }
-        });
-
-        // Agregar acción al botón cancelar
-        cancelarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose(); // Cierra la ventana
-            }
-        });
-
-        add(panel);
+        }
     }
 
     private void agregarEstudiante() {
@@ -108,4 +149,3 @@ public class AgregarEstudianteUI extends JFrame {
         }
     }
 }
-

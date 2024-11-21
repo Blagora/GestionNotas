@@ -1,14 +1,9 @@
 package sistemanotas.InterefacesGraficas.Admin;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import javax.swing.*;
 import sistemanotas.Estructura.AdminService;
 
 public class AgregarDocenteUI extends JFrame {
@@ -24,62 +19,88 @@ public class AgregarDocenteUI extends JFrame {
 
     public AgregarDocenteUI() {
         adminService = new AdminService();
-        
+
+        // Configurar ventana principal
         setTitle("Agregar Docente");
-        setSize(400, 350);
+        setSize(450, 400);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        // Crear componentes
+        // Panel principal
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(new Color(240, 248, 255)); // Fondo azul claro
+        mainPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Campos de entrada
+        JLabel titleLabel = new JLabel("Agregar Nuevo Docente");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        titleLabel.setForeground(new Color(0, 51, 102)); // Azul oscuro
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainPanel.add(titleLabel, gbc);
+
+        gbc.gridwidth = 1; // Reiniciar anchura
+
+        // Código
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainPanel.add(new JLabel("Código:"), gbc);
         codigoField = new JTextField(20);
+        gbc.gridx = 1;
+        mainPanel.add(codigoField, gbc);
+
+        // Nombre
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        mainPanel.add(new JLabel("Nombre:"), gbc);
         nombreField = new JTextField(20);
+        gbc.gridx = 1;
+        mainPanel.add(nombreField, gbc);
+
+        // Apellido
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        mainPanel.add(new JLabel("Apellido:"), gbc);
         apellidoField = new JTextField(20);
+        gbc.gridx = 1;
+        mainPanel.add(apellidoField, gbc);
+
+        // Correo
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        mainPanel.add(new JLabel("Correo:"), gbc);
         correoField = new JTextField(20);
+        gbc.gridx = 1;
+        mainPanel.add(correoField, gbc);
+
+        // Área
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        mainPanel.add(new JLabel("Área:"), gbc);
         areaField = new JTextField(20);
-        agregarButton = new JButton("Agregar Docente");
+        gbc.gridx = 1;
+        mainPanel.add(areaField, gbc);
+
+        // Botones
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        agregarButton = new JButton("Agregar");
+        agregarButton.setBackground(new Color(0, 153, 76)); // Verde
+        agregarButton.setForeground(Color.WHITE);
         cancelarButton = new JButton("Cancelar");
+        cancelarButton.setBackground(new Color(204, 0, 0)); // Rojo
+        cancelarButton.setForeground(Color.WHITE);
+        buttonPanel.add(agregarButton);
+        buttonPanel.add(cancelarButton);
 
-        // Crear panel
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-
-        // Posicionar componentes en el panel
-        JLabel codigoLabel = new JLabel("Código:");
-        codigoLabel.setBounds(30, 30, 80, 25);
-        panel.add(codigoLabel);
-        codigoField.setBounds(120, 30, 200, 25);
-        panel.add(codigoField);
-
-        JLabel nombreLabel = new JLabel("Nombre:");
-        nombreLabel.setBounds(30, 70, 80, 25);
-        panel.add(nombreLabel);
-        nombreField.setBounds(120, 70, 200, 25);
-        panel.add(nombreField);
-
-        JLabel apellidoLabel = new JLabel("Apellido:");
-        apellidoLabel.setBounds(30, 110, 80, 25);
-        panel.add(apellidoLabel);
-        apellidoField.setBounds(120, 110, 200, 25);
-        panel.add(apellidoField);
-
-        JLabel correoLabel = new JLabel("Correo:");
-        correoLabel.setBounds(30, 150, 80, 25);
-        panel.add(correoLabel);
-        correoField.setBounds(120, 150, 200, 25);
-        panel.add(correoField);
-        
-        JLabel areaLabel = new JLabel("Area:");
-        areaLabel.setBounds(30, 190, 80, 25);
-        panel.add(areaLabel);
-        areaField.setBounds(120, 190, 200, 25);
-        panel.add(areaField);
-
-        agregarButton.setBounds(90, 240, 150, 30);
-        panel.add(agregarButton);
-        cancelarButton.setBounds(250, 240, 100, 30);
-        panel.add(cancelarButton);
-
-        // Agregar acción al botón agregar
+        // Agregar acciones a los botones
         agregarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -87,15 +108,23 @@ public class AgregarDocenteUI extends JFrame {
             }
         });
 
-        // Agregar acción al botón cancelar
         cancelarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Cierra la ventana
+                dispose();
             }
         });
 
-        add(panel);
+        // Añadir paneles a la ventana
+        add(mainPanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Look and Feel
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void agregarDocente() {
@@ -116,7 +145,7 @@ public class AgregarDocenteUI extends JFrame {
 
         if (agregado) {
             JOptionPane.showMessageDialog(this, "Docente agregado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            dispose(); // Cerrar la ventana después de agregar
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Error al agregar docente.", "Error", JOptionPane.ERROR_MESSAGE);
         }

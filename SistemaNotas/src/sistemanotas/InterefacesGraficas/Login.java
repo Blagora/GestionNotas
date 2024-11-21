@@ -1,40 +1,110 @@
 package sistemanotas.InterefacesGraficas;
-
 import sistemanotas.InterefacesGraficas.Admin.AdminUI;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.sql.*;
 import sistemanotas.ConexionBD.ConexionDB;
 
+
 public class Login extends JFrame {
+
     private JTextField usuarioField;
     private JPasswordField contrasenaField;
 
     public Login() {
         setTitle("Login - Sistema de Notas");
-        setSize(300, 150);
+        setSize(500, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel();
+        // Configurar el panel principal con fondo personalizado
+        JPanel mainPanel = new FondoPanel("C:\\Users\\Admin\\Pictures\\proyecto_images\\uan_login.png");
+        mainPanel.setLayout(new GridBagLayout());
+
+      JLabel tituloLabel = new JLabel("Sistema de Notas", JLabel.CENTER) {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+
+        // Configuración de la fuente
+        g2d.setFont(new Font("Arial Black", Font.BOLD, 30));
+
+        // Dibujar sombra
+        g2d.setColor(Color.BLACK); // Color de la sombra
+        g2d.drawString(getText(), getInsets().left + 4, getHeight() / 2 + 12); // Sombra ligeramente desplazada
+
+        // Dibujar texto principal
+        g2d.setColor(new Color(135, 206, 250)); // Azul claro (puedes personalizarlo)
+        g2d.drawString(getText(), getInsets().left, getHeight() / 2 + 10);
+    }
+};// Agregar un borde para evitar el recorte
+tituloLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+
+        JLabel usuarioLabel = new JLabel("Usuario:");
+        usuarioLabel.setFont(new Font("Arial Black", Font.BOLD, 20));
+        usuarioLabel.setForeground(Color.BLACK);
+
+        JLabel contrasenaLabel = new JLabel("Contraseña:");
+        contrasenaLabel.setFont(new Font("Arial Black", Font.BOLD, 20));
+        contrasenaLabel.setForeground(Color.BLACK);
+
         usuarioField = new JTextField(15);
         contrasenaField = new JPasswordField(15);
+
         JButton loginButton = new JButton("Ingresar");
+        loginButton.setFont(new Font("Arial", Font.BOLD, 16));
+        loginButton.setBackground(new Color(0, 102, 204));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        loginButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
 
-        panel.add(new JLabel("Usuario:"));
-        panel.add(usuarioField);
-        panel.add(new JLabel("Contraseña:"));
-        panel.add(contrasenaField);
-        panel.add(loginButton);
+        // Configurar layout
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // Agregar componentes al panel principal
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        mainPanel.add(tituloLabel, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        mainPanel.add(usuarioLabel, gbc);
+
+        gbc.gridx = 1;
+        mainPanel.add(usuarioField, gbc);
+
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        mainPanel.add(contrasenaLabel, gbc);
+
+        gbc.gridx = 1;
+        mainPanel.add(contrasenaField, gbc);
+
+        gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        mainPanel.add(loginButton, gbc);
+
+        // Agregar acción al botón
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 autenticarUsuario();
             }
         });
 
-        add(panel);
+        add(mainPanel);
     }
 
     private void autenticarUsuario() {
@@ -74,4 +144,54 @@ public class Login extends JFrame {
         }
     }
 
+   // Clase para personalizar el panel con fondo difuminado
+    private static class FondoPanel extends JPanel {
+        private BufferedImage imagenFondo;
+
+        public FondoPanel(String rutaImagen) {
+            try {
+                ImageIcon originalIcon = new ImageIcon(rutaImagen);
+                Image originalImage = originalIcon.getImage();
+                BufferedImage bufferedImage = new BufferedImage(
+                        originalImage.getWidth(null),
+                        originalImage.getHeight(null),
+                        BufferedImage.TYPE_INT_ARGB
+                );
+
+                Graphics2D g2d = bufferedImage.createGraphics();
+                g2d.drawImage(originalImage, 0, 0, null);
+                g2d.dispose();
+
+                // Aplicar desenfoque
+                imagenFondo = aplicarDesenfoque(bufferedImage);
+            } catch (Exception e) {
+                System.err.println("No se pudo cargar o procesar la imagen de fondo: " + e.getMessage());
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (imagenFondo != null) {
+                g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+            }
+        }
+
+       private BufferedImage aplicarDesenfoque(BufferedImage image) {
+    float[] kernelData = {
+        1 / 256f, 4 / 256f, 6 / 256f, 4 / 256f, 1 / 256f,
+        4 / 256f, 16 / 256f, 24 / 256f, 16 / 256f, 4 / 256f,
+        6 / 256f, 24 / 256f, 36 / 256f, 24 / 256f, 6 / 256f,
+        4 / 256f, 16 / 256f, 24 / 256f, 16 / 256f, 4 / 256f,
+        1 / 256f, 4 / 256f, 6 / 256f, 4 / 256f, 1 / 256f
+    };
+    Kernel kernel = new Kernel(5, 5, kernelData);
+    ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+    return convolveOp.filter(image, null);
+}
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Login().setVisible(true));
+    }
 }
