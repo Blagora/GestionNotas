@@ -1,54 +1,78 @@
 package sistemanotas.InterefacesGraficas.Admin;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import sistemanotas.Estructura.AdminService;
 
-public class CrearCursoUI extends JFrame{
-    
+public class CrearCursoUI extends JFrame {
+
     private JTextField codigoField;
     private JTextField nombreField;
     private JButton crearButton;
     private AdminService adminService;
-    
+
     public CrearCursoUI(AdminService adminService) {
-        
         this.adminService = adminService;
+
+        // Configuración básica de la ventana
         setTitle("Crear Curso");
-        setSize(400, 200);
+        setSize(400, 250);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Crear componentes
-        codigoField = new JTextField(20);
-        nombreField = new JTextField(20);       
-        crearButton = new JButton("Crear Curso");
+        // Crear panel principal con fondo azul claro
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(new Color(173, 216, 230)); // Fondo azul claro
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Márgenes entre componentes
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-
-        // Posicionar componentes en el panel
+        // Configurar etiquetas
         JLabel codigoLabel = new JLabel("Código:");
-        codigoLabel.setBounds(30, 20, 80, 25);
-        panel.add(codigoLabel);
-        codigoField.setBounds(120, 20, 100, 25);
-        panel.add(codigoField);
+        codigoLabel.setForeground(new Color(0, 102, 204)); // Azul fuerte
+        codigoLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
         JLabel nombreLabel = new JLabel("Nombre:");
-        nombreLabel.setBounds(30, 60, 80, 25);
-        panel.add(nombreLabel);
-        nombreField.setBounds(120, 60, 100, 25);
-        panel.add(nombreField);
-        
-        crearButton.setBounds(70, 100, 150, 30);
-        panel.add(crearButton);
-        
+        nombreLabel.setForeground(new Color(0, 102, 204)); // Azul fuerte
+        nombreLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
+        // Crear campos de texto
+        codigoField = new JTextField(20);
+        nombreField = new JTextField(20);
+
+        // Crear botón
+        crearButton = new JButton("Crear Curso");
+        crearButton.setBackground(new Color(0, 153, 76)); // Verde
+        crearButton.setForeground(Color.WHITE);
+        crearButton.setFont(new Font("Arial", Font.BOLD, 14));
+        crearButton.setFocusPainted(false);
+
+        // Posicionar componentes en el panel
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(codigoLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panel.add(codigoField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(nombreLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panel.add(nombreField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2; // Botón ocupa dos columnas
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(crearButton, gbc);
+
+        // Agregar acción al botón
         crearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,9 +80,10 @@ public class CrearCursoUI extends JFrame{
             }
         });
 
+        // Agregar panel al frame
         add(panel);
-    }    
-    
+    }
+
     private void crearCurso() {
         String codigo = codigoField.getText().trim();
         String nombre = nombreField.getText().trim();
@@ -77,4 +102,3 @@ public class CrearCursoUI extends JFrame{
         }
     }
 }
-   

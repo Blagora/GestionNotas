@@ -1,18 +1,14 @@
 package sistemanotas.InterefacesGraficas.Admin;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import sistemanotas.Estructura.AdminService;
 
 public class AgregarDocenteUI extends JFrame {
-    
+
     private JTextField codigoField;
     private JTextField nombreField;
     private JTextField apellidoField;
@@ -24,7 +20,8 @@ public class AgregarDocenteUI extends JFrame {
 
     public AgregarDocenteUI() {
         adminService = new AdminService();
-        
+
+        // Configuración básica de la ventana
         setTitle("Agregar Docente");
         setSize(400, 350);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -39,47 +36,51 @@ public class AgregarDocenteUI extends JFrame {
         agregarButton = new JButton("Agregar Docente");
         cancelarButton = new JButton("Cancelar");
 
-        // Crear panel
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
+        // Crear panel principal con fondo azul
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(new Color(173, 216, 230)); // Color azul claro
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Márgenes entre componentes
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Posicionar componentes en el panel
+        // Agregar componentes al panel con posiciones específicas
         JLabel codigoLabel = new JLabel("Código:");
-        codigoLabel.setBounds(30, 30, 80, 25);
-        panel.add(codigoLabel);
-        codigoField.setBounds(120, 30, 200, 25);
-        panel.add(codigoField);
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(codigoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0;
+        panel.add(codigoField, gbc);
 
         JLabel nombreLabel = new JLabel("Nombre:");
-        nombreLabel.setBounds(30, 70, 80, 25);
-        panel.add(nombreLabel);
-        nombreField.setBounds(120, 70, 200, 25);
-        panel.add(nombreField);
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(nombreLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1;
+        panel.add(nombreField, gbc);
 
         JLabel apellidoLabel = new JLabel("Apellido:");
-        apellidoLabel.setBounds(30, 110, 80, 25);
-        panel.add(apellidoLabel);
-        apellidoField.setBounds(120, 110, 200, 25);
-        panel.add(apellidoField);
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(apellidoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2;
+        panel.add(apellidoField, gbc);
 
         JLabel correoLabel = new JLabel("Correo:");
-        correoLabel.setBounds(30, 150, 80, 25);
-        panel.add(correoLabel);
-        correoField.setBounds(120, 150, 200, 25);
-        panel.add(correoField);
-        
-        JLabel areaLabel = new JLabel("Area:");
-        areaLabel.setBounds(30, 190, 80, 25);
-        panel.add(areaLabel);
-        areaField.setBounds(120, 190, 200, 25);
-        panel.add(areaField);
+        gbc.gridx = 0; gbc.gridy = 3;
+        panel.add(correoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 3;
+        panel.add(correoField, gbc);
 
-        agregarButton.setBounds(90, 240, 150, 30);
-        panel.add(agregarButton);
-        cancelarButton.setBounds(250, 240, 100, 30);
-        panel.add(cancelarButton);
+        JLabel areaLabel = new JLabel("Área:");
+        gbc.gridx = 0; gbc.gridy = 4;
+        panel.add(areaLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 4;
+        panel.add(areaField, gbc);
 
-        // Agregar acción al botón agregar
+        // Botones
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 1;
+        panel.add(agregarButton, gbc);
+        gbc.gridx = 1; gbc.gridy = 5;
+        panel.add(cancelarButton, gbc);
+
+        // Acciones de los botones
         agregarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -87,7 +88,6 @@ public class AgregarDocenteUI extends JFrame {
             }
         });
 
-        // Agregar acción al botón cancelar
         cancelarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,6 +95,7 @@ public class AgregarDocenteUI extends JFrame {
             }
         });
 
+        // Añadir el panel a la ventana
         add(panel);
     }
 
@@ -111,7 +112,7 @@ public class AgregarDocenteUI extends JFrame {
             return;
         }
 
-        // Llamar al método de agregar estudiante
+        // Llamar al método de agregar docente
         boolean agregado = adminService.agregarDocente(codigo, nombre, apellido, correo, area);
 
         if (agregado) {

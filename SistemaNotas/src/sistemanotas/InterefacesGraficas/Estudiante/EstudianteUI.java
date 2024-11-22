@@ -22,27 +22,50 @@ public class EstudianteUI extends JFrame {
             return;
         }
 
+        // Configuración de la ventana
         setTitle("Panel de Estudiante - " + estudiante.getNombre());
-        setSize(400, 200);
+        setSize(500, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
+        // Panel principal
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
+        panel.setBackground(new Color(0, 51, 102)); // Color azul
 
+        // Título
+        JLabel tituloLabel = new JLabel("Bienvenido, " + estudiante.getNombre(), JLabel.CENTER);
+        tituloLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        tituloLabel.setForeground(Color.WHITE);
+        panel.add(tituloLabel, BorderLayout.NORTH);
+
+        // Panel de botones
+        JPanel botonesPanel = new JPanel();
+        botonesPanel.setLayout(new GridLayout(3, 1, 10, 10)); // Grid layout para botones
+        botonesPanel.setBackground(new Color(0, 51, 102));
+
+        // Botones
         JButton verCursosButton = new JButton("Ver Cursos");
         JButton verNotasButton = new JButton("Ver Notas");
         JButton salirButton = new JButton("Salir");
 
-        JPanel botonesPanel = new JPanel();
-        botonesPanel.setLayout(new FlowLayout());
+        // Estilo de botones
+        estiloBoton(verCursosButton);
+        estiloBoton(verNotasButton);
+        estiloBoton(salirButton);
+
         botonesPanel.add(verCursosButton);
         botonesPanel.add(verNotasButton);
-        panel.add(salirButton);
+        botonesPanel.add(salirButton);
 
-        panel.add(botonesPanel, BorderLayout.SOUTH);
+        // Agregar botones al panel principal
+        panel.add(botonesPanel, BorderLayout.CENTER);
+
+        // Agregar el panel al JFrame
         add(panel);
 
+        // Acción de ver cursos
         verCursosButton.addActionListener((ActionEvent e) -> {
             List<String> cursos = obtenerCursos(estudiante.getId());
             if (cursos.isEmpty()) {
@@ -56,6 +79,7 @@ public class EstudianteUI extends JFrame {
             }
         });
 
+        // Acción de ver notas
         verNotasButton.addActionListener((ActionEvent e) -> {
             List<String> notas = obtenerNotas(estudiante.getId());
             if (notas.isEmpty()) {
@@ -68,7 +92,8 @@ public class EstudianteUI extends JFrame {
                 JOptionPane.showMessageDialog(this, mensaje.toString());
             }
         });
-        
+
+        // Acción de salir
         salirButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -77,6 +102,28 @@ public class EstudianteUI extends JFrame {
         });
     }
 
+    // Método para aplicar estilo a los botones
+    private void estiloBoton(JButton boton) {
+        boton.setFont(new Font("Arial", Font.BOLD, 14));
+        boton.setBackground(new Color(0, 102, 204)); // Azul
+        boton.setForeground(Color.WHITE);
+        boton.setFocusPainted(false);
+        boton.setBorder(BorderFactory.createLineBorder(new Color(0, 102, 204), 2));
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Efecto hover para los botones
+        boton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton.setBackground(new Color(0, 76, 153)); // Azul más oscuro
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton.setBackground(new Color(0, 102, 204)); // Azul original
+            }
+        });
+    }
+
+    // Obtener los datos del estudiante desde la base de datos
     private Estudiante obtenerEstudiante(String codigoEstudiante) {
         Estudiante estudiante = null;
         String query = """
@@ -109,6 +156,7 @@ public class EstudianteUI extends JFrame {
         return estudiante;
     }
 
+    // Obtener los cursos del estudiante desde la base de datos
     private List<String> obtenerCursos(int estudianteId) {
         List<String> cursos = new ArrayList<>();
         String query = """
@@ -134,6 +182,7 @@ public class EstudianteUI extends JFrame {
         return cursos;
     }
 
+    // Obtener las notas del estudiante desde la base de datos
     private List<String> obtenerNotas(int estudianteId) {
         List<String> notas = new ArrayList<>();
         String query = """

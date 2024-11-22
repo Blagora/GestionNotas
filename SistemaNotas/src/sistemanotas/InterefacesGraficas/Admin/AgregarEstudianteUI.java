@@ -1,9 +1,9 @@
 package sistemanotas.InterefacesGraficas.Admin;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import sistemanotas.Estructura.AdminService;
 
 public class AgregarEstudianteUI extends JFrame {
@@ -18,7 +18,8 @@ public class AgregarEstudianteUI extends JFrame {
 
     public AgregarEstudianteUI() {
         adminService = new AdminService();
-        
+
+        // Configuración básica de la ventana
         setTitle("Agregar Estudiante");
         setSize(400, 350);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -32,41 +33,52 @@ public class AgregarEstudianteUI extends JFrame {
         agregarButton = new JButton("Agregar Estudiante");
         cancelarButton = new JButton("Cancelar");
 
-        // Crear panel
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
+        // Crear panel principal con fondo azul
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(new Color(173, 216, 230)); // Azul claro
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Márgenes entre componentes
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Posicionar componentes en el panel
+        // Etiqueta y campo para "Código"
         JLabel codigoLabel = new JLabel("Código:");
-        codigoLabel.setBounds(30, 30, 80, 25);
-        panel.add(codigoLabel);
-        codigoField.setBounds(120, 30, 200, 25);
-        panel.add(codigoField);
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(codigoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0;
+        panel.add(codigoField, gbc);
 
+        // Etiqueta y campo para "Nombre"
         JLabel nombreLabel = new JLabel("Nombre:");
-        nombreLabel.setBounds(30, 70, 80, 25);
-        panel.add(nombreLabel);
-        nombreField.setBounds(120, 70, 200, 25);
-        panel.add(nombreField);
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(nombreLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1;
+        panel.add(nombreField, gbc);
 
+        // Etiqueta y campo para "Apellido"
         JLabel apellidoLabel = new JLabel("Apellido:");
-        apellidoLabel.setBounds(30, 110, 80, 25);
-        panel.add(apellidoLabel);
-        apellidoField.setBounds(120, 110, 200, 25);
-        panel.add(apellidoField);
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(apellidoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2;
+        panel.add(apellidoField, gbc);
 
+        // Etiqueta y campo para "Correo"
         JLabel correoLabel = new JLabel("Correo:");
-        correoLabel.setBounds(30, 150, 80, 25);
-        panel.add(correoLabel);
-        correoField.setBounds(120, 150, 200, 25);
-        panel.add(correoField);
+        gbc.gridx = 0; gbc.gridy = 3;
+        panel.add(correoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 3;
+        panel.add(correoField, gbc);
 
-        agregarButton.setBounds(90, 200, 150, 30);
-        panel.add(agregarButton);
-        cancelarButton.setBounds(250, 200, 100, 30);
-        panel.add(cancelarButton);
+        // Botón "Agregar Estudiante"
+        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridwidth = 2; // Ocupa dos columnas
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(agregarButton, gbc);
 
-        // Agregar acción al botón agregar
+        // Botón "Cancelar"
+        gbc.gridy = 5;
+        panel.add(cancelarButton, gbc);
+
+        // Agregar acción al botón "Agregar Estudiante"
         agregarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -74,7 +86,7 @@ public class AgregarEstudianteUI extends JFrame {
             }
         });
 
-        // Agregar acción al botón cancelar
+        // Agregar acción al botón "Cancelar"
         cancelarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,6 +94,7 @@ public class AgregarEstudianteUI extends JFrame {
             }
         });
 
+        // Agregar el panel al frame
         add(panel);
     }
 
@@ -108,4 +121,3 @@ public class AgregarEstudianteUI extends JFrame {
         }
     }
 }
-

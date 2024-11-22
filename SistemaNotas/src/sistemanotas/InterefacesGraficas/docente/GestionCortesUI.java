@@ -3,13 +3,8 @@ package sistemanotas.InterefacesGraficas.docente;
 import sistemanotas.ConexionBD.ConexionDB;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,20 +22,55 @@ public class GestionCortesUI extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Diseño
-        JPanel panel = new JPanel();
+        // Diseño con un fondo azul
+        JPanel panel = new FondoPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // Título de la ventana
+        JLabel titleLabel = new JLabel("Gestión de Cortes", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setForeground(Color.WHITE);
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(titleLabel, gbc);
+
+        // Componente de Curso
         JLabel cursoLabel = new JLabel("Curso:");
-        JComboBox<String> cursoComboBox = new JComboBox<>(getCursos()); // Cargar cursos del docente
-        JLabel corteLabel = new JLabel("Número de cortes:");
-        JComboBox<Integer> corteComboBox = new JComboBox<>(new Integer[]{3, 4}); // Opciones de cortes
-        JButton guardarButton = new JButton("Guardar");
+        cursoLabel.setForeground(Color.WHITE);
+        JComboBox<String> cursoComboBox = new JComboBox<>(getCursos());
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(cursoLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(cursoComboBox, gbc);
+
+        // Componente de Número de Cortes
+        JLabel corteLabel = new JLabel("Número de Cortes:");
+        corteLabel.setForeground(Color.WHITE);
+        JComboBox<Integer> corteComboBox = new JComboBox<>(new Integer[]{3, 4});
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(corteLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(corteComboBox, gbc);
 
         // Panel para los porcentajes de cada corte
         porcentajePanel = new JPanel();
+        porcentajePanel.setBackground(new Color(0, 64, 128)); // Fondo más oscuro para el panel de porcentajes
         porcentajeFields = new JTextField[4]; // Máximo de 4 cortes
         for (int i = 0; i < 4; i++) {
             JLabel label = new JLabel("Corte " + (i + 1) + ":");
+            label.setForeground(Color.WHITE);
             porcentajeFields[i] = new JTextField(5);
+            porcentajeFields[i].setBackground(Color.WHITE);
+            porcentajeFields[i].setBorder(BorderFactory.createLineBorder(Color.WHITE));
             porcentajePanel.add(label);
             porcentajePanel.add(porcentajeFields[i]);
         }
@@ -48,16 +78,20 @@ public class GestionCortesUI extends JFrame {
         // Mostrar u ocultar campos según el número de cortes
         corteComboBox.addActionListener(e -> actualizarCamposPorcentaje((Integer) corteComboBox.getSelectedItem()));
 
-        panel.add(cursoLabel);
-        panel.add(cursoComboBox);
-        panel.add(corteLabel);
-        panel.add(corteComboBox);
-        panel.add(porcentajePanel);
-        panel.add(guardarButton);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        panel.add(porcentajePanel, gbc);
 
-        add(panel);
+        // Botón de Guardar
+        JButton guardarButton = new JButton("Guardar");
+        guardarButton.setBackground(new Color(0, 123, 255)); // Azul brillante
+        guardarButton.setForeground(Color.WHITE);
+        guardarButton.setFont(new Font("Arial", Font.BOLD, 14));
+        gbc.gridy = 4;
+        panel.add(guardarButton, gbc);
 
-        // Evento para guardar cortes
+        // Evento para guardar los cortes
         guardarButton.addActionListener(e -> {
             String curso = (String) cursoComboBox.getSelectedItem();
             int numCortes = (Integer) corteComboBox.getSelectedItem();
@@ -83,6 +117,9 @@ public class GestionCortesUI extends JFrame {
                 definirCortes(curso, numCortes, porcentajes);
             }
         });
+
+        // Añadir panel al frame
+        add(panel);
     }
 
     private void actualizarCamposPorcentaje(int numCortes) {
@@ -146,6 +183,14 @@ public class GestionCortesUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al definir los cortes.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    // Panel con fondo azul
+    class FondoPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(new Color(0, 123, 255)); // Azul de fondo
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
+    }
 }
-
-

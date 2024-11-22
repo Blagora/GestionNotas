@@ -2,6 +2,7 @@ package sistemanotas.InterefacesGraficas.docente;
 
 import sistemanotas.ConexionBD.ConexionDB;
 import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,38 +13,95 @@ public class AsignarNotasUI extends JFrame {
     public AsignarNotasUI(String docenteId) {
         this.docenteId = docenteId;
         setTitle("Asignar Notas");
-        setSize(600, 400);
+        setSize(600, 500);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Diseño de la interfaz
-        JPanel panel = new JPanel();
+        // Diseño de la interfaz con fondo azul
+        JPanel panel = new FondoPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // Título de la ventana
+        JLabel titleLabel = new JLabel("Asignación de Notas", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setForeground(Color.WHITE);
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(titleLabel, gbc);
+
+        // Crear los componentes de la interfaz
         JLabel cursoLabel = new JLabel("Curso:");
-        JComboBox<String> cursoComboBox = new JComboBox<>(getCursos()); // Cargar cursos del docente
+        JComboBox<String> cursoComboBox = new JComboBox<>(getCursos());
         JLabel grupoLabel = new JLabel("Grupo:");
-        JComboBox<String> grupoComboBox = new JComboBox<>(getGrupos(cursoComboBox.getItemAt(0))); // Cargar grupos
+        JComboBox<String> grupoComboBox = new JComboBox<>(getGrupos(cursoComboBox.getItemAt(0)));
         JLabel tareaLabel = new JLabel("Tarea:");
-        JTextField tareaField = new JTextField(20); // Campo para ingresar nombre de la tarea
+        JTextField tareaField = new JTextField(20);
         JLabel estudianteLabel = new JLabel("Estudiante:");
-        JComboBox<String> estudianteComboBox = new JComboBox<>(getEstudiantes(cursoComboBox.getItemAt(0))); // Cargar estudiantes
+        JComboBox<String> estudianteComboBox = new JComboBox<>(getEstudiantes(cursoComboBox.getItemAt(0)));
         JLabel notaLabel = new JLabel("Nota:");
         JTextField notaField = new JTextField(5);
         JButton guardarButton = new JButton("Guardar Nota");
 
-        panel.add(cursoLabel);
-        panel.add(cursoComboBox);
-        panel.add(grupoLabel);
-        panel.add(grupoComboBox);
-        panel.add(tareaLabel);
-        panel.add(tareaField);
-        panel.add(estudianteLabel);
-        panel.add(estudianteComboBox);
-        panel.add(notaLabel);
-        panel.add(notaField);
-        panel.add(guardarButton);
+        // Estilización de los elementos
+        cursoLabel.setForeground(Color.WHITE);
+        grupoLabel.setForeground(Color.WHITE);
+        tareaLabel.setForeground(Color.WHITE);
+        estudianteLabel.setForeground(Color.WHITE);
+        notaLabel.setForeground(Color.WHITE);
+        tareaField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        notaField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        guardarButton.setBackground(new Color(0, 123, 255));
+        guardarButton.setForeground(Color.WHITE);
+        guardarButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+        // Añadir los componentes al panel
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(cursoLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(cursoComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(grupoLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(grupoComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(tareaLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(tareaField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panel.add(estudianteLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(estudianteComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panel.add(notaLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(notaField, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        panel.add(guardarButton, gbc);
 
         add(panel);
 
+        // Listener para cargar los grupos al seleccionar el curso
         cursoComboBox.addActionListener(e -> {
             String selectedCurso = (String) cursoComboBox.getSelectedItem();
             grupoComboBox.setModel(new DefaultComboBoxModel<>(getGrupos(selectedCurso)));
@@ -58,13 +116,12 @@ public class AsignarNotasUI extends JFrame {
             }
         });
 
+        // Listener para cargar los estudiantes del grupo seleccionado
         grupoComboBox.addActionListener(e -> {
             String selectedGrupo = (String) grupoComboBox.getSelectedItem();
-            // Aquí necesitamos obtener los estudiantes solo del grupo seleccionado
             String selectedCurso = (String) cursoComboBox.getSelectedItem();
             estudianteComboBox.setModel(new DefaultComboBoxModel<>(getEstudiantesPorGrupo(selectedCurso, selectedGrupo)));
         });
-
 
         // Evento para guardar la nota
         guardarButton.addActionListener(e -> {
@@ -93,13 +150,13 @@ public class AsignarNotasUI extends JFrame {
         });
     }
 
-    // Obtener los cursos para el docente
+    // Método para obtener los cursos del docente
     private String[] getCursos() {
         List<String> cursos = new ArrayList<>();
         try (Connection conn = ConexionDB.getConnection()) {
             String query = "SELECT codigo, nombre FROM cursos WHERE docente_id = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, docenteId); // Usa el ID del docente
+            stmt.setString(1, docenteId);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -113,10 +170,10 @@ public class AsignarNotasUI extends JFrame {
         return cursos.toArray(new String[0]);
     }
 
-    // Obtener los grupos asociados a un curso
+    // Métodos adicionales para obtener grupos, estudiantes y asignar notas
     private String[] getGrupos(String curso) {
         List<String> grupos = new ArrayList<>();
-        String codigoCurso = curso.split(" - ")[0]; // Asume que el formato es "Código - Nombre"
+        String codigoCurso = curso.split(" - ")[0];
 
         try (Connection conn = ConexionDB.getConnection()) {
             String query = "SELECT g.nombre FROM grupos_notas g " +
@@ -137,17 +194,15 @@ public class AsignarNotasUI extends JFrame {
         return grupos.toArray(new String[0]);
     }
 
-    // Obtener los estudiantes de un grupo
     private String[] getEstudiantes(String curso) {
         List<String> estudiantes = new ArrayList<>();
-        String codigoCurso = curso.split(" - ")[0]; // Asume que el formato es "Código - Nombre"
+        String codigoCurso = curso.split(" - ")[0];
 
         try (Connection conn = ConexionDB.getConnection()) {
-            // Consultamos los estudiantes que están en el curso
             String query = "SELECT e.nombre FROM estudiantes e " +
                     "JOIN estudiantes_cursos ec ON e.id = ec.estudiante_id " +
                     "JOIN cursos c ON ec.curso_id = c.id " +
-                    "WHERE c.codigo = ?";  // Filtramos por código del curso
+                    "WHERE c.codigo = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, codigoCurso);
             ResultSet rs = stmt.executeQuery();
@@ -162,14 +217,12 @@ public class AsignarNotasUI extends JFrame {
 
         return estudiantes.toArray(new String[0]);
     }
-    
-    // Obtener los estudiantes de un curso y grupo
+
     private String[] getEstudiantesPorGrupo(String curso, String grupo) {
         List<String> estudiantes = new ArrayList<>();
-        String codigoCurso = curso.split(" - ")[0]; // Asume que el formato es "Código - Nombre"
+        String codigoCurso = curso.split(" - ")[0];
 
         try (Connection conn = ConexionDB.getConnection()) {
-            // Consultamos los estudiantes que están en el curso y en el grupo seleccionado
             String query = "SELECT e.nombre FROM estudiantes e " +
                     "JOIN estudiantes_cursos ec ON e.id = ec.estudiante_id " +
                     "JOIN cursos c ON ec.curso_id = c.id " +
@@ -191,10 +244,8 @@ public class AsignarNotasUI extends JFrame {
         return estudiantes.toArray(new String[0]);
     }
 
-    // Asignar la nota a un estudiante para una tarea en un grupo
     private void asignarNota(String curso, String grupo, String tarea, String estudiante, int nota) {
         try (Connection conn = ConexionDB.getConnection()) {
-            // Obtener el ID del estudiante
             String estudianteIdQuery = "SELECT id FROM estudiantes WHERE nombre = ?";
             PreparedStatement stmtEstudiante = conn.prepareStatement(estudianteIdQuery);
             stmtEstudiante.setString(1, estudiante);
@@ -202,7 +253,6 @@ public class AsignarNotasUI extends JFrame {
             if (rsEstudiante.next()) {
                 int estudianteId = rsEstudiante.getInt("id");
 
-                // Obtener el ID del grupo
                 String grupoIdQuery = "SELECT id FROM grupos_notas WHERE nombre = ?";
                 PreparedStatement stmtGrupo = conn.prepareStatement(grupoIdQuery);
                 stmtGrupo.setString(1, grupo);
@@ -210,7 +260,6 @@ public class AsignarNotasUI extends JFrame {
                 if (rsGrupo.next()) {
                     int grupoId = rsGrupo.getInt("id");
 
-                    // Verificar si ya existe una nota para el estudiante en la misma tarea y grupo
                     String verificarNotaQuery = "SELECT COUNT(*) FROM notas_tareas WHERE grupo_id = ? AND estudiante_id = ? AND nombre_tarea = ?";
                     PreparedStatement stmtVerificarNota = conn.prepareStatement(verificarNotaQuery);
                     stmtVerificarNota.setInt(1, grupoId);
@@ -220,10 +269,9 @@ public class AsignarNotasUI extends JFrame {
 
                     if (rsVerificarNota.next() && rsVerificarNota.getInt(1) > 0) {
                         JOptionPane.showMessageDialog(this, "Ya se ha asignado una nota para esta tarea en este grupo al estudiante.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return; // No insertar la nota si ya existe
+                        return;
                     }
 
-                    // Insertar la nota en la base de datos
                     String insertQuery = "INSERT INTO notas_tareas (grupo_id, estudiante_id, nombre_tarea, nota) " +
                             "VALUES (?, ?, ?, ?)";
                     PreparedStatement stmtInsert = conn.prepareStatement(insertQuery);
@@ -242,4 +290,13 @@ public class AsignarNotasUI extends JFrame {
         }
     }
 
+    // Panel con fondo de color
+    class FondoPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(new Color(34, 40, 49)); // Azul oscuro
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
+    }
 }

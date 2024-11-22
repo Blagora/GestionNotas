@@ -1,11 +1,12 @@
 package sistemanotas.InterefacesGraficas.Admin;
-
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import sistemanotas.Estructura.AdminService;
 import sistemanotas.Estructura.Docente;
 
 public class EditarDocenteUI extends JFrame {
-    
+
     private JTextField codigoField;
     private JTextField nombreField;
     private JTextField apellidoField;
@@ -17,66 +18,78 @@ public class EditarDocenteUI extends JFrame {
 
     public EditarDocenteUI(String codigoDocente) {
         adminService = new AdminService();
-        
+
         setTitle("Editar Docente");
-        setSize(400, 400);
+        setSize(500, 500);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Crear componentes
-        codigoField = new JTextField(20);
-        nombreField = new JTextField(20);
-        apellidoField = new JTextField(20);
-        correoField = new JTextField(20);
-        areaField = new JTextField(20);
-        guardarButton = new JButton("Guardar Cambios");
-        cancelarButton = new JButton("Cancelar");
+        // Establecer fondo azul
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(null);
+        mainPanel.setBackground(new Color(0, 102, 204)); // Fondo azul
+        add(mainPanel);
 
-        // Crear panel
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
+        // Estilo común para los campos de texto
+        Font fieldFont = new Font("Arial", Font.PLAIN, 16);
+        Border fieldBorder = BorderFactory.createLineBorder(new Color(0, 51, 153), 2);
 
-        // Posicionar componentes en el panel
-        JLabel codigoLabel = new JLabel("Código:");
-        codigoLabel.setBounds(30, 30, 80, 25);
-        panel.add(codigoLabel);
-        codigoField.setBounds(120, 30, 200, 25);
-        panel.add(codigoField);
-        codigoField.setEditable(false); // Código no editable
+        // Crear componentes estilizados
+        codigoField = crearCampoTexto(fieldFont, fieldBorder, false);
+        nombreField = crearCampoTexto(fieldFont, fieldBorder, true);
+        apellidoField = crearCampoTexto(fieldFont, fieldBorder, true);
+        correoField = crearCampoTexto(fieldFont, fieldBorder, true);
+        areaField = crearCampoTexto(fieldFont, fieldBorder, true);
 
-        JLabel nombreLabel = new JLabel("Nombre:");
-        nombreLabel.setBounds(30, 80, 80, 25);
-        panel.add(nombreLabel);
-        nombreField.setBounds(120, 80, 200, 25);
-        panel.add(nombreField);
+        guardarButton = crearBoton("Guardar Cambios", new Color(0, 153, 51), Color.WHITE);
+        cancelarButton = crearBoton("Cancelar", new Color(204, 0, 0), Color.WHITE);
 
-        JLabel apellidoLabel = new JLabel("Apellido:");
-        apellidoLabel.setBounds(30, 130, 80, 25);
-        panel.add(apellidoLabel);
-        apellidoField.setBounds(120, 130, 200, 25);
-        panel.add(apellidoField);
+        // Crear etiquetas estilizadas
+        Font labelFont = new Font("Arial", Font.BOLD, 16);
+        JLabel codigoLabel = crearEtiqueta("Código:", labelFont, Color.WHITE);
+        JLabel nombreLabel = crearEtiqueta("Nombre:", labelFont, Color.WHITE);
+        JLabel apellidoLabel = crearEtiqueta("Apellido:", labelFont, Color.WHITE);
+        JLabel correoLabel = crearEtiqueta("Correo:", labelFont, Color.WHITE);
+        JLabel areaLabel = crearEtiqueta("Área:", labelFont, Color.WHITE);
 
-        JLabel correoLabel = new JLabel("Correo:");
-        correoLabel.setBounds(30, 180, 80, 25);
-        panel.add(correoLabel);
-        correoField.setBounds(120, 180, 200, 25);
-        panel.add(correoField);
-        
-        JLabel areaLabel = new JLabel("Area:");
-        areaLabel.setBounds(30, 230, 80, 25);
-        panel.add(areaLabel);
-        areaField.setBounds(120, 230, 200, 25);
-        panel.add(areaField);
+        // Posicionar componentes
+        int labelX = 50, labelWidth = 100, labelHeight = 30;
+        int fieldX = 160, fieldWidth = 220, fieldHeight = 30;
+        int yOffset = 40;
 
-        guardarButton.setBounds(30, 280, 150, 30);
-        cancelarButton.setBounds(200, 280, 150, 30);
+        codigoLabel.setBounds(labelX, 30, labelWidth, labelHeight);
+        codigoField.setBounds(fieldX, 30, fieldWidth, fieldHeight);
 
-        panel.add(guardarButton);
-        panel.add(cancelarButton);
+        nombreLabel.setBounds(labelX, 30 + yOffset * 2, labelWidth, labelHeight);
+        nombreField.setBounds(fieldX, 30 + yOffset * 2, fieldWidth, fieldHeight);
 
-        add(panel);
+        apellidoLabel.setBounds(labelX, 30 + yOffset * 4, labelWidth, labelHeight);
+        apellidoField.setBounds(fieldX, 30 + yOffset * 4, fieldWidth, fieldHeight);
 
-        // Cargar datos del estudiante automáticamente al inicio
+        correoLabel.setBounds(labelX, 30 + yOffset * 6, labelWidth, labelHeight);
+        correoField.setBounds(fieldX, 30 + yOffset * 6, fieldWidth, fieldHeight);
+
+        areaLabel.setBounds(labelX, 30 + yOffset * 8, labelWidth, labelHeight);
+        areaField.setBounds(fieldX, 30 + yOffset * 8, fieldWidth, fieldHeight);
+
+        guardarButton.setBounds(50, 30 + yOffset * 10, 150, 40);
+        cancelarButton.setBounds(230, 30 + yOffset * 10, 150, 40);
+
+        // Agregar componentes al panel
+        mainPanel.add(codigoLabel);
+        mainPanel.add(codigoField);
+        mainPanel.add(nombreLabel);
+        mainPanel.add(nombreField);
+        mainPanel.add(apellidoLabel);
+        mainPanel.add(apellidoField);
+        mainPanel.add(correoLabel);
+        mainPanel.add(correoField);
+        mainPanel.add(areaLabel);
+        mainPanel.add(areaField);
+        mainPanel.add(guardarButton);
+        mainPanel.add(cancelarButton);
+
+        // Cargar datos del docente automáticamente al inicio
         cargarDocente(codigoDocente);
 
         // Agregar acción al botón guardar
@@ -84,6 +97,32 @@ public class EditarDocenteUI extends JFrame {
 
         // Agregar acción al botón cancelar
         cancelarButton.addActionListener(e -> dispose()); // Cierra la ventana
+    }
+
+    private JTextField crearCampoTexto(Font font, Border border, boolean editable) {
+        JTextField textField = new JTextField();
+        textField.setFont(font);
+        textField.setBorder(border);
+        textField.setEditable(editable);
+        return textField;
+    }
+
+    private JButton crearBoton(String texto, Color background, Color foreground) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Arial", Font.BOLD, 16));
+        boton.setBackground(background);
+        boton.setForeground(foreground);
+        boton.setFocusPainted(false);
+        boton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return boton;
+    }
+
+    private JLabel crearEtiqueta(String texto, Font font, Color color) {
+        JLabel label = new JLabel(texto);
+        label.setFont(font);
+        label.setForeground(color);
+        return label;
     }
 
     private void cargarDocente(String codigoDocente) {
@@ -114,7 +153,7 @@ public class EditarDocenteUI extends JFrame {
             return;
         }
 
-        // Llamar al método para actualizar el estudiante
+        // Llamar al método para actualizar el docente
         boolean actualizado = adminService.actualizarDocente(codigo, nombre, apellido, correo, area);
 
         if (actualizado) {
@@ -125,4 +164,3 @@ public class EditarDocenteUI extends JFrame {
         }
     }
 }
-

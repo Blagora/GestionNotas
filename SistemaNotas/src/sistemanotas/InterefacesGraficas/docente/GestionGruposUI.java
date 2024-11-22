@@ -1,5 +1,10 @@
 package sistemanotas.InterefacesGraficas.docente;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import sistemanotas.ConexionBD.ConexionDB;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,33 +26,96 @@ public class GestionGruposUI extends JFrame {
     public GestionGruposUI(String docenteId) {
         this.docenteId = docenteId;
         setTitle("Gestionar Grupos");
-        setSize(500, 300);
+        setSize(500, 350); // Tamaño ajustado para el diseño visual
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Diseño
+        // Diseño del panel principal
         JPanel panel = new JPanel();
-        JLabel cursoLabel = new JLabel("Curso:");
-        JComboBox<String> cursoComboBox = new JComboBox<>(getCursos()); // Cargar cursos del docente
-        JLabel corteLabel = new JLabel("Corte:");
-        JComboBox<String> corteComboBox = new JComboBox<>(getCortes()); // Cargar cortes para el curso
-        JLabel grupoLabel = new JLabel("Nombre del Grupo:");
-        JTextField grupoField = new JTextField(20);
-        JLabel porcentajeLabel = new JLabel("Porcentaje:");
-        JTextField porcentajeField = new JTextField(5);
-        JButton guardarButton = new JButton("Guardar");
-        JButton verGruposButton = new JButton("Ver Grupos");
+        panel.setLayout(new GridBagLayout()); // Usamos GridBagLayout para alineación
+        panel.setBackground(new Color(240, 248, 255)); // Fondo azul claro
 
-        panel.add(cursoLabel);
-        panel.add(cursoComboBox);
-        panel.add(corteLabel);
-        panel.add(corteComboBox);
-        panel.add(grupoLabel);
-        panel.add(grupoField);
-        panel.add(porcentajeLabel);
-        panel.add(porcentajeField);
-        panel.add(guardarButton);
-        panel.add(verGruposButton);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Margen entre componentes
+
+        // Etiqueta de título
+        JLabel tituloLabel = new JLabel("Gestión de Grupos");
+        tituloLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        tituloLabel.setForeground(new Color(0, 51, 102)); // Azul oscuro
+
+        // Componentes
+        JLabel cursoLabel = new JLabel("Curso:");
+        cursoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JComboBox<String> cursoComboBox = new JComboBox<>(getCursos()); // Cargar cursos del docente
+
+        JLabel corteLabel = new JLabel("Corte:");
+        corteLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JComboBox<String> corteComboBox = new JComboBox<>(getCortes()); // Cargar cortes para el curso
+
+        JLabel grupoLabel = new JLabel("Nombre del Grupo:");
+        grupoLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JTextField grupoField = new JTextField(20);
+
+        JLabel porcentajeLabel = new JLabel("Porcentaje:");
+        porcentajeLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JTextField porcentajeField = new JTextField(5);
+
+        JButton guardarButton = new JButton("Guardar");
+        guardarButton.setBackground(new Color(30, 144, 255)); // Azul claro
+        guardarButton.setForeground(Color.WHITE);
+        guardarButton.setFont(new Font("Arial", Font.BOLD, 14));
+        guardarButton.setFocusPainted(false);
+
+        JButton verGruposButton = new JButton("Ver Grupos");
+        verGruposButton.setBackground(new Color(34, 139, 34)); // Verde oscuro
+        verGruposButton.setForeground(Color.WHITE);
+        verGruposButton.setFont(new Font("Arial", Font.BOLD, 14));
+        verGruposButton.setFocusPainted(false);
+
+        // Alineación y agregación de componentes
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(tituloLabel, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridy++;
+        panel.add(cursoLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(cursoComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        panel.add(corteLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(corteComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        panel.add(grupoLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(grupoField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        panel.add(porcentajeLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(porcentajeField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(guardarButton, gbc);
+
+        gbc.gridy++;
+        panel.add(verGruposButton, gbc);
 
         add(panel);
 
@@ -229,4 +297,3 @@ public class GestionGruposUI extends JFrame {
         }
     }
 }
-
